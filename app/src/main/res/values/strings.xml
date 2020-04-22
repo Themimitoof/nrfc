@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name" translatable="false">Nrfc Scanner</string>
+    <string name="card_scan_title">Scan new tag</string>
+    <string name="card_scan_subtitle">Approch a tag in front of the NFC reader of your device.</string>
+    <string name="card_scan_history_title">Scans history</string>
+    <string name="card_scan_history_subtitle">See the content of your previous scans.</string>
+    <string name="scan">Scan</string>
+    <string name="scanned_at">Scanned at</string>
+    <string name="scan_result_title">Scan results</string>
+</resources>

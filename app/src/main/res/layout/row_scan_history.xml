@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:id="@+id/row_scan_history">
+
+    <TextView
+        android:id="@+id/row_scan_uid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:text="Scan 00:11:00:11:00:00"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/row_scan_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scanned at: 2020/01/01 00:00:00"
+        android:textSize="14sp" />
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="card_scan_title">Scanner un nouveau tag</string>
+    <string name="card_scan_subtitle">Approchez votre tag devant le lecteur NFC de votre appareil.</string>
+    <string name="card_scan_history_title">Historique de scans</string>
+    <string name="card_scan_history_subtitle">Re-lisez le contenu de vos précédents scans.</string>
+    <string name="scan">Scan</string>
+    <string name="scanned_at">Scanné le</string>
+    <string name="scan_result_title">Résulats du scan</string>
+</resources>
