@@ -7,4 +7,6 @@
     <string name="scan">Scan</string>
     <string name="scanned_at">Scanned at</string>
     <string name="scan_result_title">Scan results</string>
+    <string name="toast_nfc_not_enabled">Please enable your NFC reader in the settings app.</string>
+    <string name="toast_nfc_not_enabled_app_stopped">You don\'t want to enable the NFC reader, so I ragequit.</string>
 </resources>

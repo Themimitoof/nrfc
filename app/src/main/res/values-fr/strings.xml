@@ -7,4 +7,6 @@
     <string name="scan">Scan</string>
     <string name="scanned_at">Scanné le</string>
     <string name="scan_result_title">Résulats du scan</string>
+    <string name="toast_nfc_not_enabled">Veuillez activer votre lecteur NFC dans les paramètres de l\'appareil.</string>
+    <string name="toast_nfc_not_enabled_app_stopped">J\'abandonne car vous ne voulez pas activer votre lecteur NFC :(</string>
 </resources>
