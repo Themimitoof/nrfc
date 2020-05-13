@@ -6,26 +6,59 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.couchbase.lite.*
+import com.couchbase.lite.Dictionary
+import fr.mvieira.nrfc.helpers.hexConverter
 import fr.mvieira.nrfc.models.Scan
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private lateinit var listview: ListView
     private lateinit var nfcAdapter: NfcAdapter
     private lateinit var pendingIntent: PendingIntent
+    private lateinit var couchbaseConfig: DatabaseConfiguration
+    private lateinit var couchbaseDB: Database
     private var scans: ArrayList<Scan> = ArrayList()
     private var nfcAdapterAttempts: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        scans.add(Scan(uid = "00:11:22:33:44", date = System.currentTimeMillis()))
-        scans.add(Scan(uid = "00:22:33:44:55", date = System.currentTimeMillis()))
-        scans.add(Scan(uid = "00:11:55:66:77", date = System.currentTimeMillis()))
 
+        // Initialize Couchbase Lite
+        CouchbaseLite.init(baseContext)
+        couchbaseConfig = DatabaseConfiguration()
+        couchbaseDB = Database("nrfc", couchbaseConfig)
+
+        // Get last 10 items from the database
+        val dbResults =
+            QueryBuilder.select(SelectResult.all()).from(DataSource.database(couchbaseDB)).orderBy(
+                Ordering.property("date").descending()
+            ).limit(Expression.intValue(10)).execute()
+
+        for (result in dbResults.allResults()) {
+            val result = result.getValue("nrfc") as Dictionary
+
+            try {
+                scans.add(Scan.InitFromDictionary(result))
+            } catch (e: Error) {
+                Log.e(
+                    "nrfc",
+                    String.format(
+                        "%s document is not conform for Scan object.",
+                        result.getString("uid")
+                    )
+                )
+            }
+        }
+
+        // Fill the list with the last results
         listview = findViewById(R.id.scan_history_listview)
         val listAdapter = ScanHistoryListAdapter(this, scans)
         listview.adapter = listAdapter
