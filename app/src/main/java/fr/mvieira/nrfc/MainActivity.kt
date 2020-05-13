@@ -15,6 +15,7 @@ import com.couchbase.lite.*
 import com.couchbase.lite.Dictionary
 import fr.mvieira.nrfc.helpers.hexConverter
 import fr.mvieira.nrfc.models.Scan
+import fr.mvieira.nrfc.models.ScanDetailed
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
@@ -140,15 +141,19 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
+            val scanDetailed = ScanDetailed(
+                tagId,
+                System.currentTimeMillis(),
+                null,
+                tagTechList,
+                null
+            )
 
-
-            Toast.makeText(this, "Tag scanned!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.toast_tag_scanned, Toast.LENGTH_SHORT).show()
 
             val newIntent = Intent(this, ScanResultActivity::class.java)
-//            newIntent.putExtra("tagId", scans[0])
+            newIntent.putExtra("scan", scanDetailed)
             startActivity(newIntent)
         }
-
-
     }
 }
