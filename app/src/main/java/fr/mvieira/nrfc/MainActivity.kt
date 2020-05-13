@@ -2,6 +2,7 @@ package fr.mvieira.nrfc
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
@@ -85,26 +86,69 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 startActivity(intent)
             } else if (!nfcAdapter.isEnabled && nfcAdapterAttempts > 1) {
-                Toast.makeText(this, R.string.toast_nfc_not_enabled_app_stopped, Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(
+                    this,
+                    R.string.toast_nfc_not_enabled_app_stopped,
+                    Toast.LENGTH_LONG
+                ).show()
 
                 this.finish()
                 exitProcess(1)
             }
 
-            nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null)
+            nfcAdapter.enableForegroundDispatch(
+                this,
+                pendingIntent,
+                null,
+                null
+            )
         }
     }
 
     public override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        val tagFromIntent: Tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-        val action = intent.action
+        val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
 
-        Toast.makeText(this, "Intent handled!", Toast.LENGTH_SHORT).show()
-        //do something with tagFromIntent
-//        val intentt = Intent(this, this::class.java)
-//        startActivity(intentt)
+        if (tagFromIntent != null) {
+            val ndefMessages: ArrayList<NdefRecord>? =
+                intent.getParcelableArrayListExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+            val action = intent.action
+            val tagId = hexConverter.bytesToMacFormat(tagFromIntent.id)
+            var tagTechList = ArrayList<String>()
+
+            for (type in tagFromIntent.techList) {
+                tagTechList.add(type)
+            }
+
+            if (ndefMessages == null) {
+                Log.i("bluuuurp ndef length", "No NDEF messages")
+            } else {
+//                Log.i("bluuuurp ndef length", ndefMessages.byteArrayLength.toString())
+            }
+
+            val newScan = MutableDocument()
+            newScan.setString("uid", tagId)
+            newScan.setDate("date", Date(System.currentTimeMillis()))
+            newScan.setValue("technologies", tagTechList)
+            newScan.setValue("ndef", ndefMessages)
+
+            try {
+                couchbaseDB.save(newScan)
+            } catch (e: CouchbaseLiteException) {
+                Log.e("scan event", "Unable to store the current scan in the database.")
+                e.printStackTrace()
+            }
+
+
+
+            Toast.makeText(this, "Tag scanned!", Toast.LENGTH_SHORT).show()
+
+            val newIntent = Intent(this, ScanResultActivity::class.java)
+//            newIntent.putExtra("tagId", scans[0])
+            startActivity(newIntent)
+        }
+
+
     }
 }
