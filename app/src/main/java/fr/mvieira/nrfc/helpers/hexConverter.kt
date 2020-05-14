@@ -13,5 +13,16 @@ class hexConverter {
 
             return finalStr.dropLast(1)
         }
+
+        @JvmStatic
+        fun bytesToHexString(byteArray: ByteArray): String {
+            var finalStr: String = "0x"
+
+            for (b in byteArray) {
+                finalStr += String.format("%02X", b)
+            }
+
+            return finalStr
+        }
     }
 }
