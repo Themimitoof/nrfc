@@ -10,12 +10,13 @@
     tools:context=".ScanResultActivity">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/scan_card"
+        android:id="@+id/scan_basic_infos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp">
 
         <LinearLayout
+            android:id="@+id/scan_basic_infos_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -26,16 +27,32 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/card_scan_title"
+                android:text="@string/card_tag_infos"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/scan_ndef_infos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:id="@+id/scan_ndef_infos_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title, secondary and supporting text -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/card_scan_subtitle"
-                android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?android:attr/textColorSecondary"
+                android:text="@string/card_tag_ndef_data"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

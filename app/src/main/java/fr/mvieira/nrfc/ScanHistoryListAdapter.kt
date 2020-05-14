@@ -19,7 +19,7 @@ class ScanHistoryListAdapter(context: Context, items: ArrayList<Scan>) :
         var view: View
         var viewHolder: ScanHolder
 
-        if (convertView == null || convertView?.tag == null) {
+        if (convertView == null || convertView.tag == null) {
             view = convertView ?: LayoutInflater.from(context)
                 .inflate(R.layout.row_scan_history, parent, false)
             viewHolder = ScanHolder()
@@ -29,23 +29,21 @@ class ScanHistoryListAdapter(context: Context, items: ArrayList<Scan>) :
 
         } else {
             view = convertView
-            viewHolder = convertView?.tag as ScanHolder
+            viewHolder = convertView.tag as ScanHolder
         }
 
         val scan: Scan? = getItem(position)
-        viewHolder.uid.setText(String.format("%s %s", context.getString(R.string.scan), scan!!.uid))
-        viewHolder.date.setText(
-            String.format(
-                "%s: %s",
-                context.getString(R.string.scanned_at),
-                Timestamp(scan!!.date).toString()
-            )
+        viewHolder.uid.text = String.format("%s %s", context.getString(R.string.scan), scan!!.uid)
+        viewHolder.date.text = String.format(
+            "%s: %s",
+            context.getString(R.string.scanned_at),
+            Timestamp(scan.date).toString()
         )
 
         // Add onClick event
         view.setOnClickListener {
             val intent = Intent(context, ScanResultActivity::class.java).apply {
-                putExtra("uid", scan!!.uid)
+                putExtra("scan", scan)
             }
             startActivity(context, intent, null)
         }
