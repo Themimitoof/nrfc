@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "fr.mvieira.nfcscanner"
+        applicationId "fr.mvieira.nrfc"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
