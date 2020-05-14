@@ -2,7 +2,6 @@ package fr.mvieira.nrfc
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
@@ -13,9 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.couchbase.lite.*
 import com.couchbase.lite.Dictionary
-import fr.mvieira.nrfc.helpers.hexConverter
+import fr.mvieira.nrfc.helpers.NFC
 import fr.mvieira.nrfc.models.Scan
-import fr.mvieira.nrfc.models.ScanDetailed
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
@@ -112,27 +110,22 @@ class MainActivity : AppCompatActivity() {
         val tagFromIntent: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
 
         if (tagFromIntent != null) {
-            val ndefMessages: ArrayList<NdefRecord>? =
-                intent.getParcelableArrayListExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-            val action = intent.action
-            val tagId = hexConverter.bytesToMacFormat(tagFromIntent.id)
-            var tagTechList = ArrayList<String>()
+            val scannedDate = Date(System.currentTimeMillis())
+//            val ndefMessages: ArrayList<NdefRecord>? =
+//                intent.getParcelableArrayListExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
 
-            for (type in tagFromIntent.techList) {
-                tagTechList.add(type)
-            }
-
-            if (ndefMessages == null) {
-                Log.i("bluuuurp ndef length", "No NDEF messages")
-            } else {
-//                Log.i("bluuuurp ndef length", ndefMessages.byteArrayLength.toString())
-            }
+            val tagInfos = NFC.getBasicInformation(this, tagFromIntent)
+            tagInfos["date"] = scannedDate.time
 
             val newScan = MutableDocument()
-            newScan.setString("uid", tagId)
-            newScan.setDate("date", Date(System.currentTimeMillis()))
-            newScan.setValue("technologies", tagTechList)
-            newScan.setValue("ndef", ndefMessages)
+            newScan.setString("uid", tagInfos["tagId"] as String)
+            newScan.setString("tagType", tagInfos["tagType"] as String)
+            newScan.setValue("technologies", tagInfos["techList"])
+            newScan.setValue("protocols", tagInfos["protocols"])
+            newScan.setValue("techInfos", tagInfos["techInfos"])
+            newScan.setValue("memoryMap", null)
+            newScan.setValue("ndef", null)
+            newScan.setDate("date", scannedDate)
 
             try {
                 couchbaseDB.save(newScan)
@@ -141,18 +134,12 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
-            val scanDetailed = ScanDetailed(
-                tagId,
-                System.currentTimeMillis(),
-                null,
-                tagTechList,
-                null
-            )
+            val scan = Scan.InitFromMap(tagInfos)
 
             Toast.makeText(this, R.string.toast_tag_scanned, Toast.LENGTH_SHORT).show()
 
             val newIntent = Intent(this, ScanResultActivity::class.java)
-            newIntent.putExtra("scan", scanDetailed)
+            newIntent.putExtra("scan", scan)
             startActivity(newIntent)
         }
     }
